@@ -89,3 +89,33 @@
 | **建议** | AI 提出5个格式问题：1.数据流图用ASCII还是Mermaid 2.是否需要伪代码 3.是否需要模块依赖关系 4.是否单独说明load_chunks 5.是否写明Prompt模板 |
 | **人工判断** | 逐项确认：1.用Mermaid语法+文字说明 2.需要伪代码形式 3.需要说明main→answer→retrieve调用链 4.需要单独说明load_chunks模块 5.必须完整写明System Prompt和User Prompt |
 | **验证** | design.md 已创建，包含7个章节：数据流图、模块接口、Prompt模板、拒答规则、来源引用、配置常量、文件结构 |
+
+## 记录 10：编写初版 tasks.md
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 拆解开发计划，生成可独立验证的任务清单 |
+| **输入** | spec.md、design.md、course-faq.md |
+| **建议** | AI 提出7个拆解问题：1.测试驱动模式（TDD/先搭框架） 2.任务粒度（按模块/按场景） 3.单元测试范围 4.任务数量 5.完成标准（自动化命令） 6.Mock Server依赖 7.文档任务 |
+| **人工判断** | 逐项确认：1.混合模式（Test-First→Stub→实现） 2.按模块拆分 3.retrieve独立单元测试+answer用mock+questions.json集成测试 4.10个任务 5.每个任务绑定自动化命令 6.单独Task验证Mock Server连通性 7.ai-log.md作为收尾Task |
+| **验证** | tasks.md 已创建，包含10个任务和依赖关系图 |
+
+## 记录 11：审查并完善 tasks.md
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 审查初版 tasks.md，发现并修复潜在问题 |
+| **输入** | 初版 tasks.md、spec.md、test_basic.py、现有代码 |
+| **建议** | AI 提出6个完善点：1.test_basic.py需更新（retrieve返回字典列表） 2.现有代码需重写（单字匹配→短语匹配+布尔命中） 3.缺少停用词常量（需补充到spec.md） 4.questions.json可能需微调 5.缺少test-record.md 6.缺少reflection.md |
+| **人工判断** | 全部采纳，要求按这6点重新调整 tasks.md |
+| **验证** | tasks.md 已更新，包含：Task 1补充停用词常量、Task 2更新test_basic.py、Task 9微调questions.json、Task 10新增test-record.md和reflection.md |
+
+## 记录 12：推送到远程仓库
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 将项目代码推送到 GitHub 远程仓库，实现版本备份和协作 |
+| **输入** | 本地 Git 仓库（3个commit）、GitHub 仓库地址 |
+| **建议** | AI 添加远程仓库 origin，执行 git push -u origin master |
+| **人工判断** | 采纳，提供仓库地址 https://github.com/Happerey/mimomimo |
+| **验证** | git push 成功，远程仓库显示完整文件结构 |
