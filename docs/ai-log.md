@@ -149,3 +149,53 @@
 | **建议** | AI 用正则 `\n(?=##\s*\[faq-\d{2}\])` 分割，提取 id 后返回 `[{"id": "faq-01", "content": "..."}, ...]` |
 | **人工判断** | 采纳 |
 | **验证** | pytest tests/test_retrieve.py::TestLoadChunks 结果：5 passed |
+
+## 记录 16：执行 Task 4 — 实现 retrieve 核心算法
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 实现短语切分、停用词过滤、布尔命中计分 |
+| **输入** | spec.md 检索算法定义、test_retrieve.py 测试用例 |
+| **建议** | AI 实现了多个版本：1.滑动窗口提取2-4字词（失败，关键词太多） 2.按标点切分短语（失败，完整短语匹配不到） 3.最终采用按标点切分+中文2字词提取+英文单词提取 |
+| **人工判断** | 经过多轮调试，最终确定：按标点切分短语，剔除长度<=1字符和停用词，布尔命中计分 |
+| **验证** | pytest tests/test_retrieve.py 结果：14 passed |
+
+## 记录 17：执行 Task 5 — 编写 answer 单元测试
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 用 unittest.mock 模拟 HTTP 请求，不依赖真实 Server |
+| **输入** | spec.md 接口签名、design.md 拒答规则 |
+| **建议** | AI 创建 test_answer.py 包含 7 个测试用例：返回字典、包含键、低分拒答、空chunks拒答、空问题拒答、Prompt格式、sources提取 |
+| **人工判断** | 采纳，使用 unittest.mock.patch 模拟 urllib.request.urlopen |
+| **验证** | pytest tests/test_answer.py 结果：6 failed（预期，answer 未实现）、1 passed |
+
+## 记录 18：执行 Task 6 — 实现 answer 模块
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 实现拒答判断、Prompt 拼接、LLM 调用 |
+| **输入** | spec.md 接口签名、design.md Prompt模板、test_answer.py 测试用例 |
+| **建议** | AI 实现 answer.py：调用 retrieve 获取 Top3，拒答判断（score<2 或差值<=1），拼接 System Prompt + 【参考资料】+ User Prompt，调用 LLM Mock，提取 sources |
+| **人工判断** | 采纳，拒答文案采用 spec.md 定义的两种文案 |
+| **验证** | pytest tests/test_answer.py 结果：7 passed |
+
+## 记录 19：执行 Task 7 — 验证 Mock Server 连通性
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 确保 Mock Server 可启动并响应请求 |
+| **输入** | llm-mock/mock_server.py |
+| **建议** | AI 后台启动 Mock Server，发送 POST 请求到 /v1/chat/completions，验证响应包含 choices 字段 |
+| **人工判断** | 采纳 |
+| **验证** | Invoke-RestMethod 返回包含 choices 的响应，Mock Server 连通性正常 |
+
+## 记录 20：执行 Task 8 — 实现 main.py CLI 入口
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 实现命令行入口，支持 `python src/main.py "问题"` 调用 |
+| **输入** | spec.md CLI 要求、retrieve.py 和 answer.py 已实现 |
+| **建议** | AI 更新 main.py：使用 retrieve.load_chunks 加载 FAQ，调用 answer 获取结果，打印 answer 和 sources |
+| **人工判断** | 采纳，移除重复的 load_chunks 函数，统一使用 retrieve 模块的实现 |
+| **验证** | 待集成测试验证 |
