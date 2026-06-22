@@ -59,9 +59,15 @@ print('\n3. 接口契约检查')
 try:
     from src.retrieve import retrieve
     result = retrieve('test', [])
-    check('retrieve() 返回列表', isinstance(result, list), f'返回 {type(result).__name__}')
+    ok = (isinstance(result, list) and
+          (len(result) == 0 or
+           (isinstance(result[0], dict) and
+            'id' in result[0] and
+            'content' in result[0] and
+            'score' in result[0])))
+    check('retrieve() 返回列表（元素为{id,content,score}字典）', ok, f'返回 {result}')
 except Exception as e:
-    check('retrieve() 返回列表', False, str(e))
+    check('retrieve() 返回列表（元素为{id,content,score}字典）', False, str(e))
 
 try:
     from src.answer import answer
