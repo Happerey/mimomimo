@@ -36,6 +36,44 @@
 | `MIN_HIT_COUNT` | 2 | 必须命中至少 2 个不同有效关键词，否则拒答 |
 | `MIN_SCORE_GAP` | 1 | Top1 - Top2 <= 1 时拒答（差值不足，结果不明确） |
 
+## 接口签名
+
+### retrieve 函数
+
+```python
+def retrieve(question: str, chunks: list) -> list:
+    """
+    输入: question - 用户问题字符串
+         chunks - 完整的 FAQ chunk 列表（10个字符串）
+    输出: Top3 匹配结果列表，每个元素为字典：
+         [
+             {"id": "faq-01", "content": "chunk内容", "score": 3},
+             {"id": "faq-02", "content": "chunk内容", "score": 2},
+             {"id": "faq-03", "content": "chunk内容", "score": 1}
+         ]
+         如果所有命中分数均为0，返回空列表 []
+    """
+```
+
+### answer 函数
+
+```python
+def answer(question: str, chunks: list) -> dict:
+    """
+    输入: question - 用户问题字符串
+         chunks - 完整的 FAQ chunk 列表（10个字符串）
+    输出: 字典，格式如下：
+         {
+             "answer": "LLM生成的回答，或拒答文案",
+             "sources": ["faq-01", "faq-02"]
+         }
+    """
+    # 1. 调用 retrieve 拿到带分数的 Top3
+    # 2. 拒答判断：top_results 为空 或 score < 2 或 score差值 <= 1
+    # 3. 拼接 Prompt 并调用 LLM
+    # 4. 返回 LLM 回答 + 从 top_results 提取的 id 列表作为 sources
+```
+
 ## 检索算法（Retrieve）
 
 1. **输入**：用户问题 Q，FAQ 文本块列表 C
