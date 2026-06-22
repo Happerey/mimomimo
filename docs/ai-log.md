@@ -119,3 +119,33 @@
 | **建议** | AI 添加远程仓库 origin，执行 git push -u origin master |
 | **人工判断** | 采纳，提供仓库地址 https://github.com/Happerey/mimomimo |
 | **验证** | git push 成功，远程仓库显示完整文件结构 |
+
+## 记录 13：执行 Task 1 — 补充停用词常量 + 编写 retrieve 单元测试
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | Test-First，先写测试再实现；补充 spec.md 配置常量 |
+| **输入** | spec.md、course-faq.md、design.md 中的检索算法定义 |
+| **建议** | AI 在 spec.md 添加 STOPWORDS 常量，创建 test_retrieve.py 包含 14 个测试用例（TestLoadChunks 5 个 + TestRetrieve 9 个） |
+| **人工判断** | 采纳，要求测试覆盖：精确匹配、跨段落、资料外、空输入、停用词过滤、分数排序、布尔命中 |
+| **验证** | pytest 运行结果：3 failed（预期，retrieve 未实现）、11 passed |
+
+## 记录 14：执行 Task 2 — 更新 test_basic.py + 搭建框架 Stub
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 更新接口契约检查，创建空函数签名让 test_basic.py 通过 |
+| **输入** | test_basic.py、spec.md 中的接口签名定义 |
+| **建议** | AI 更新 test_basic.py 检查 retrieve 返回字典列表（包含 id/content/score），更新 retrieve.py 和 answer.py 为空签名 |
+| **人工判断** | 采纳，要求 retrieve 返回格式为 `[{"id", "content", "score"}, ...]` |
+| **验证** | python tests/test_basic.py 结果：9 passed, 0 failed |
+
+## 记录 15：执行 Task 3 — 实现 load_chunks() 模块
+
+| 字段 | 内容 |
+|------|------|
+| **目的** | 实现 FAQ 文件切片功能，返回 10 个 chunk 字典列表 |
+| **输入** | data/course-faq.md、spec.md 中的切片规则（按 `## [faq-XX]` 分割） |
+| **建议** | AI 用正则 `\n(?=##\s*\[faq-\d{2}\])` 分割，提取 id 后返回 `[{"id": "faq-01", "content": "..."}, ...]` |
+| **人工判断** | 采纳 |
+| **验证** | pytest tests/test_retrieve.py::TestLoadChunks 结果：5 passed |
